@@ -1,0 +1,28 @@
+## OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+## Dependencies
+**/node_modules/
+
+## Logs and runtime artifacts
+**/*.log
+redis-monitor/system_metrics.log
+
+## Build and temporary artifacts
+tmp/
+temp/
+dist/
+build/
+coverage/
+
+## Local environment files
+.env
+.env.*
+
+## Large local lab artifact (do not publish)
+kube/test-cube.tar
