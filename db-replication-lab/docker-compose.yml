@@ -1,0 +1,40 @@
+services:
+  primary:
+    # Bitnami image simplifies primary/replica bootstrap for local labs.
+    image: bitnami/postgresql
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=demo_repl_password_change_me
+      - POSTGRESQL_USERNAME=admin
+      - POSTGRESQL_PASSWORD=demo_admin_password_change_me
+      - POSTGRESQL_DATABASE=app_db
+    volumes:
+      - primary_data:/bitnami/postgresql
+      # Gotcha (SELinux): keep :z on bind mounts when running with Podman/Docker
+      # on SELinux-enabled hosts, otherwise postgres may fail to read init files.
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:z
+
+  replica:
+    image: bitnami/postgresql
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=demo_repl_password_change_me
+      - POSTGRESQL_MASTER_HOST=primary
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+      # Gotcha: initial base copy requires valid primary user credentials.
+      - POSTGRESQL_PASSWORD=demo_admin_password_change_me
+    depends_on:
+      - primary
+    volumes:
+      - replica_data:/bitnami/postgresql
+
+# Named volumes keep database state across container restarts.
+volumes:
+  primary_data:
+  replica_data:
