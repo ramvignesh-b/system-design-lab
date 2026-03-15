@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-cube-cluster-deployment
+spec:
+  # Keep >1 replica to demonstrate self-healing and load distribution.
+  replicas: 3
+  selector:
+    matchLabels:
+      app: test-cube
+  template:
+    metadata:
+      labels:
+        app: test-cube
+    spec:
+      containers:
+        - name: test-cube-containers
+          image: localhost/test-cube:v1
+          # Gotcha: "Never" expects image preloaded in local cluster runtime.
+          # In remote clusters, use a registry-backed image and IfNotPresent.
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
