@@ -1,0 +1,41 @@
+services:
+  publisher:
+    image: postgres
+    container_name: demo_publisher
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: demo_password_change_me
+      POSTGRES_DB: demo_db
+    # Gotcha: publisher must use wal_level=logical, or publications will not work.
+    command: ["postgres", "-c", "wal_level=logical"]
+    volumes:
+      # Keep :z on SELinux hosts so init scripts are readable in container.
+      - ./init-publisher.sql:/docker-entrypoint-initdb.d/init.sql:z
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d demo_db -h localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  subscriber:
+    image: postgres:15
+    container_name: demo_subscriber
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: demo_password_change_me
+      POSTGRES_DB: demo_db
+      PUBLISHER_PASSWORD: demo_password_change_me
+      PGPASSFILE: /tmp/.pgpass
+    # Not strictly required for pure subscriber mode, but keeps config aligned.
+    command: ["postgres", "-c", "wal_level=logical"]
+    volumes:
+      # setup-pgpass.sh writes credentials file used by CREATE SUBSCRIPTION.
+      - ./setup-pgpass.sh:/docker-entrypoint-initdb.d/00-setup-pgpass.sh:z
+      - ./init-subscriber.sql:/docker-entrypoint-initdb.d/init-subscriber.sql:z
+    depends_on:
+      publisher:
+        condition: service_healthy
