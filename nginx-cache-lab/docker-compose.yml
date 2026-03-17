@@ -1,0 +1,22 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    # Expose backend directly so latency can be compared with proxied requests.
+    ports:
+      - "3000:3000"
+    volumes:
+      # Gotcha (SELinux): keep :z on bind mounts for Podman/Fedora setups.
+      - ./backend:/app:z
+      - /app/node_modules
+    command: npm run dev
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      # ro keeps config immutable from container side.
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro,z
+    depends_on:
+      - backend
