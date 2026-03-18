@@ -1,0 +1,9 @@
+{
+  "name": "rabbitmq-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "producer.js",
+  "dependencies": {
+    "amqplib": "^0.10.4"
+  }
+}
