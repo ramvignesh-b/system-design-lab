@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redis Live Usage Monitor</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js for visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <div class="logo">
+                <span class="icon">🔌</span>
+                <h1>Redis <span class="accent">Live</span> Monitor</h1>
+            </div>
+            <div id="status" class="status-indicator searching">
+                Connecting...
+            </div>
+        </header>
+
+        <section class="metrics-grid">
+            <div class="stat-card">
+                <h3>CPU Load Average</h3>
+                <div class="stat-value" id="cpu-value">--</div>
+                <div class="chart-container">
+                    <canvas id="cpuChart"></canvas>
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>Memory %</h3>
+                <div class="stat-value" id="memory-value">--</div>
+                <div class="chart-container">
+                    <canvas id="memoryChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="event-log">
+            <h3>Recent Metrics Activity</h3>
+            <ul id="log-list">
+                <!-- Data will pop here -->
+            </ul>
+        </section>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

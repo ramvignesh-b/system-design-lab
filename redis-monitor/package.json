@@ -1,0 +1,25 @@
+{
+  "name": "redis-monitor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "producer": "node producer.js",
+    "server": "node server.js",
+    "logger": "node logger.js",
+    "start": "node producer.js & node server.js"
+
+
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "ioredis": "^5.10.1",
+    "express": "^4.21.1",
+    "ws": "^8.18.0"
+
+  }
+}
